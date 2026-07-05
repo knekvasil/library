@@ -93,11 +93,21 @@ helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
 
 ### Phase 5: CI/CD
 
-1. **Create GitHub deployments workflow** — build → registry push → SSH → `kubectl set image`
+1. **Install self-hosted GitHub Actions runner** on the server (avoids NAT/SSH issues):
+   - Download and configure the runner for each repo under `/home/kaj/actions-runner-<repo>/`
+   - Register with `--labels self-hosted`
+   - Install as systemd service via `sudo ./svc.sh install && sudo ./svc.sh start`
+   - Runners start automatically on boot
 
-2. **Add GitHub Secrets:** registry PAT (with `write:packages`, `workflow`, `repo` scopes), SSH deploy key
+2. **Create deployment workflow** — build → push to GHCR → `kubectl set image` (no SSH step, runner is local)
 
-3. **Replace old cron jobs** with k8s CronJobs
+3. **Update workflow to `runs-on: self-hosted`** and replace SSH action with direct `kubectl` commands
+
+4. **Remove SSH deploy key** from GitHub Secrets (no longer needed)
+
+5. **Required GitHub Secret:** `GHCR_PAT` (with `write:packages`, `workflow`, `repo` scopes)
+
+6. **Replace old cron jobs** with k8s CronJobs
 
 ### Phase 6: Cleanup
 

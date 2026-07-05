@@ -65,14 +65,16 @@ Each domain is configured as a public hostname in the Cloudflare Tunnel dashboar
 ## CI/CD
 
 ### Deployment Pipeline
-Push to `master` triggers a GitHub Actions workflow:
+Push to `master` triggers a GitHub Actions workflow on a **self-hosted runner** (installed on the server itself as a systemd service):
 
 1. Build Docker image (tagged `:latest` and `:$SHA`)
-2. Push to container registry (e.g., `ghcr.io/<user>/<repo>`)
-3. SSH into server → `kubectl set image deployment/<app> <container>=<new-image>`
-4. `kubectl rollout status` — fails if rollout doesn't complete within a timeout
+2. Push to GHCR (`ghcr.io/<user>/<repo>`)
+3. `kubectl set image deployment/<app> -n <ns> app=ghcr.io/<user>/<repo>:$SHA`
+4. `kubectl rollout status` — fails if rollout doesn't complete within 120s
 
-**Required GitHub Secrets:** registry token (with `write:packages`, `workflow`, `repo` scopes), SSH deploy key.
+The self-hosted runner has direct `docker` and `kubectl` access since it runs on the server. No SSH key needed.
+
+**Required GitHub Secrets:** `GHCR_PAT` (with `write:packages`, `workflow`, `repo` scopes).
 
 ### Path Triggers
 Workflows can be scoped to only run when relevant files change:
