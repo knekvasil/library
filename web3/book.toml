@@ -1,0 +1,8 @@
+[book]
+title = "Web3"
+authors = ["kaj"]
+language = "en"
+
+[output.html]
+edit-url-template = "https://github.com/knekvasil/library/edit/master/web3/src/{path}"
+git-repository-url = "https://github.com/knekvasil/library"

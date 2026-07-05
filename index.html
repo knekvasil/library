@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>library.kaj</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='6' width='24' height='20' rx='2' fill='%23e1e4e8'/%3E%3Crect x='6' y='8' width='20' height='2' fill='%230f1117'/%3E%3Crect x='6' y='12' width='14' height='2' fill='%230f1117'/%3E%3Crect x='6' y='16' width='10' height='2' fill='%230f1117'/%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f1117;
+    color: #e1e4e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container { max-width: 800px; width: 90%; padding: 2rem 0; }
+  h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
+  .subtitle { color: #8b949e; margin-bottom: 2.5rem; font-size: 1.1rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .card:hover { border-color: #58a6ff; background: #1c2128; }
+  .card h2 { font-size: 1.25rem; margin-bottom: 0.5rem; color: #fff; }
+  .card p { font-size: 0.9rem; color: #8b949e; line-height: 1.5; }
+  .card .count {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: #58a6ff;
+    background: #0d419d33;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>library.kaj</h1>
+  <p class="subtitle">Knowledge base — server architecture, ML, and more</p>
+  <div class="grid">
+    <a href="/infra/" class="card">
+      <h2>🔧 Infrastructure</h2>
+      <p>Server setup, k3s, CI/CD, monitoring, postgres, Cloudflare tunnels</p>
+      <span class="count">2 articles</span>
+    </a>
+    <a href="/ml/" class="card">
+      <h2>🧠 Machine Learning</h2>
+      <p>Energy-Based Models, JEPA, gradient descent, and deep learning concepts</p>
+      <span class="count">Coming soon</span>
+    </a>
+    <a href="/web3/" class="card">
+      <h2>⛓️ Web3</h2>
+      <p>Blockchain, smart contracts, decentralized apps</p>
+      <span class="count">Coming soon</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>

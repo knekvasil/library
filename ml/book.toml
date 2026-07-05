@@ -1,0 +1,8 @@
+[book]
+title = "Machine Learning"
+authors = ["kaj"]
+language = "en"
+
+[output.html]
+edit-url-template = "https://github.com/knekvasil/library/edit/master/ml/src/{path}"
+git-repository-url = "https://github.com/knekvasil/library"
