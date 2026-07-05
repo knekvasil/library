@@ -65,16 +65,20 @@ Each domain is configured as a public hostname in the Cloudflare Tunnel dashboar
 ## CI/CD
 
 ### Deployment Pipeline
-Push to `master` triggers a GitHub Actions workflow on a **self-hosted runner** (installed on the server itself as a systemd service):
 
-1. Build Docker image (tagged `:latest` and `:$SHA`)
-2. Push to GHCR (`ghcr.io/<user>/<repo>`)
-3. `kubectl set image deployment/<app> -n <ns> app=ghcr.io/<user>/<repo>:$SHA`
-4. `kubectl rollout status` — fails if rollout doesn't complete within 120s
+Push to `master` triggers a **two-job GitHub Actions workflow**:
 
-The self-hosted runner has direct `docker` and `kubectl` access since it runs on the server. No SSH key needed.
+1. **Build** (`runs-on: ubuntu-latest`): Build Docker image (tagged `:latest` and `:$SHA`), push to `ghcr.io/<user>/<repo>`
+2. **Deploy** (`runs-on: self-hosted`, after build succeeds): `kubectl set image deployment/<app> -n <ns> app=ghcr.io/<user>/<repo>:$SHA` then `kubectl rollout status --timeout=120s`
+
+The build runs on GitHub's cloud runners (reliable network for downloading dependencies). The deploy runs on a self-hosted runner installed on the server as a systemd service, which has direct `kubectl` access.
 
 **Required GitHub Secrets:** `GHCR_PAT` (with `write:packages`, `workflow`, `repo` scopes).
+
+**Common gotchas:**
+- The `ghcr-auth` imagePullSecret must exist in the **same namespace** as the deployment (secrets are namespace-scoped)
+- Path filters should include `.github/**` so workflow file changes trigger a build
+- The `postgres:18`+ Docker image defaults to `listen_addresses='localhost'` — override in config for inter-pod connectivity
 
 ### Path Triggers
 Workflows can be scoped to only run when relevant files change:

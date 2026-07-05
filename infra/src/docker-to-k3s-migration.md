@@ -99,15 +99,21 @@ helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
    - Install as systemd service via `sudo ./svc.sh install && sudo ./svc.sh start`
    - Runners start automatically on boot
 
-2. **Create deployment workflow** — build → push to GHCR → `kubectl set image` (no SSH step, runner is local)
+2. **Create deployment workflow** with two jobs:
+   - **Build** (`runs-on: ubuntu-latest`): Build image, push to GHCR (runs on GitHub's reliable cloud)
+   - **Deploy** (`runs-on: self-hosted`, `needs: build`): `kubectl set image` + `rollout status`
 
-3. **Update workflow to `runs-on: self-hosted`** and replace SSH action with direct `kubectl` commands
+3. **Split build and deploy** — building on the server's WiFi is unreliable for large dependencies (timeouts on 50 MB+ downloads). The self-hosted runner is only used for the lightweight `kubectl` deploy step.
 
-4. **Remove SSH deploy key** from GitHub Secrets (no longer needed)
+4. **Add `.github/**` to workflow path filters** so workflow file changes trigger a build
 
-5. **Required GitHub Secret:** `GHCR_PAT` (with `write:packages`, `workflow`, `repo` scopes)
+5. **Copy `ghcr-auth` imagePullSecret into each app namespace** — secrets are namespace-scoped; the `default` namespace secret won't work for pods in `elfant` or `gin13` namespaces
 
-6. **Replace old cron jobs** with k8s CronJobs
+6. **Remove SSH deploy key** from GitHub Secrets (no longer needed)
+
+7. **Required GitHub Secret:** `GHCR_PAT` (with `write:packages`, `workflow`, `repo` scopes)
+
+8. **Replace old cron jobs** with k8s CronJobs
 
 ### Phase 6: Cleanup
 
@@ -127,4 +133,21 @@ docker system prune -a -f
 ```bash
 systemctl disable cloudflared
 ```
-For design rationale and lessons learned, see [Single-Node k3s Architecture](servr-architecture.md).
+## Lessons Learned
+
+### Postgres 18 changes `listen_addresses` default
+`postgres:18`+ defaults to `listen_addresses='localhost'`. In previous versions, it listened on `*` by default. Without overriding this, pods in other namespaces get `Connection refused`. Fix: add `listen_addresses='*'` to the ConfigMap config.
+
+### imagePullSecrets are namespace-scoped
+A `docker-registry` secret created in the `default` namespace won't be visible to pods in `elfant` or `gin13` namespaces. Must copy the secret into each namespace that pulls from GHCR.
+
+### Self-hosted runner + WiFi = unreliable builds
+The server runs on WiFi. Downloading large Python packages (polars-runtime at 54 MB) can time out during Docker builds. **Solution:** split the workflow — build on GitHub's cloud runners (`ubuntu-latest`), deploy on the self-hosted runner (lightweight `kubectl` command only).
+
+### Path filters need `.github/**` to self-trigger
+When a workflow file itself changes (and the path filter only covers source code), the new workflow won't trigger. Add `.github/**` to the paths list so workflow updates deploy themselves.
+
+### Cloudflare tunnel rename preserves credentials
+Renaming a tunnel via the API (`PATCH /accounts/.../cfd_tunnel/{id} {"name": "newname"}`) doesn't change the tunnel ID or secret. The existing credential file and k8s Secret remain valid.
+
+For design rationale, see [Single-Node k3s Architecture](servr-architecture.md).
