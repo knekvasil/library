@@ -266,6 +266,8 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### What are the assumptions of linear regression, and how do you check them?
 
+![](images/linear_regression_diagnostics.svg)
+
 - **Linearity:** Relationship between $X$ and $y$ is linear — check with residual vs. fitted plot
 - **Independence of errors:** Observations are independent — especially important for time series (Durbin-Watson test)
 - **Homoscedasticity:** Constant variance of residuals — check residual vs. fitted plot (cone shape $=$ heteroscedasticity)
@@ -275,6 +277,8 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 ---
 
 ### Explain the difference between linear and logistic regression. Can you derive gradient descent for logistic regression?
+
+![](images/linear_logistic.svg)
 
 - **Linear regression:** Identity link; predicts continuous output; minimizes MSE (closed-form via normal equation or GD)
 - **Logistic regression:** Sigmoid link $\sigma(Xw)$; predicts probability in $(0,1)$; minimizes log-loss (binary cross-entropy); convex optimization
@@ -291,6 +295,9 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 
 - **Decision tree:** Single tree, low bias but high variance — overfits easily to training data
+
+![](images/rf_vs_dt.svg)
+
 - **Random forest:** Ensemble of decision trees trained on bootstrapped samples with random feature subset per split
 - **Variance reduction via:**
   1. **Bagging (bootstrap aggregation):** Average over models trained on different data subsets → reduces variance without increasing bias
@@ -343,6 +350,7 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 ### Explain k-means clustering. How would you choose $k$, and how do you evaluate it if labels are known vs unknown?
 - **k-means algorithm (Lloyd's):** Initialize $k$ centroids, assign each point to nearest centroid, recompute centroids as mean of assigned points, repeat until convergence
 
+![](images/kmeans_elbow.svg)
 
 - **Choosing $k$:**
   - **Elbow method:** Plot inertia (within-cluster sum of squares) vs $k$, look for "elbow"
