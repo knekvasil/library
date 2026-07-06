@@ -4,8 +4,7 @@ Notes, tutorials, and deep dives on machine learning concepts.
 
 ## Topics
 
-- [Energy Based Models](ebm-intro.md) — TBD
-- [JEPA: Joint Embedding Predictive Architecture](jepa.md) — TBD
+- [General ML Review](general-ml-review.md)
 
 ---
 
