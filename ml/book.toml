@@ -3,16 +3,6 @@ title = "Machine Learning"
 authors = ["kaj"]
 language = "en"
 
-[preprocessor.svgbob]
-command = "mdbook-svgbob"
-optional = true
-code_block = "bob"
-background = "transparent"
-stroke_color = "var(--fg)"
-fill_color = "black"
-font_size = 14
-scale = 8.0
-
 [output.html]
 edit-url-template = "https://github.com/knekvasil/library/edit/master/ml/src/{path}"
 git-repository-url = "https://github.com/knekvasil/library"

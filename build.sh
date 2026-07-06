@@ -13,15 +13,6 @@ else
   MDBOOK=mdbook
 fi
 
-# Install Rust + mdbook-svgbob if not already present
-if ! command -v mdbook-svgbob &>/dev/null; then
-  echo "Installing Rust toolchain..."
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  . "$HOME/.cargo/env"
-  echo "Installing mdbook-svgbob (cargo)..."
-  cargo install mdbook-svgbob --version 0.3.0
-fi
-
 # Build each book
 for book in infra ml web3; do
   echo "Building $book..."
