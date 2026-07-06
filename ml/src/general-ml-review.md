@@ -371,7 +371,7 @@ graph LR
 ```mermaid
 graph TD
     subgraph "Binary SVM"
-        C[Input Space] --> |Kernel φ| H[Higher-Dim Feature Space]
+        C[Input Space] --> |Kernel Trick| H[Higher-Dim Feature Space]
         H --> M[Max-Margin Hyperplane]
         SV[Support Vectors] --> M
     end
@@ -535,18 +535,18 @@ graph LR
 ```mermaid
 graph LR
     subgraph RNN
-        Xt1[xₜ₋₁] --> Ht1[hₜ₋₁] --> Ht[hₜ]
-        Xt[xₜ] --> Ht
-        Ht --> Ht2[hₜ₊₁]
-        Xt2[xₜ₊₁] --> Ht2
+        Xt1[x(t-1)] --> Ht1[h(t-1)] --> Ht[h(t)]
+        Xt[x(t)] --> Ht
+        Ht --> Ht2[h(t+1)]
+        Xt2[x(t+1)] --> Ht2
     end
     subgraph LSTM
-        Ct1[Cₜ₋₁] --> |Forget Gate| Ct[Cₜ]
-        Ct --> |Input Gate| Ct2[Cₜ₊₁]
-        HtL[hₜ₋₁] --> Gates[3 Gates<br/>Forget, Input, Output]
-        XtL[xₜ] --> Gates
+        Ct1[C(t-1)] --> |Forget Gate| Ct[C(t)]
+        Ct --> |Input Gate| Ct2[C(t+1)]
+        HtL[h(t-1)] --> Gates[3 Gates<br/>Forget, Input, Output]
+        XtL[x(t)] --> Gates
         Gates --> Ct
-        Gates --> HtL2[hₜ]
+        Gates --> HtL2[h(t)]
         Ct --> HtL2
     end
 ```
@@ -879,7 +879,7 @@ graph TD
         D[Raw Data] --> Preproc[Preprocessing] --> Train[Train Model]
     end
     subgraph Serving
-        Req[Request] --> Preproc2[Preprocessing<br/>⚠️ Different Code?] --> Serve[Serve Prediction]
+        Req[Request] --> Preproc2[Preprocessing<br/>Different Code?] --> Serve[Serve Prediction]
     end
     Preproc -.-> |Skew if<br/>inconsistent| Preproc2
     FS[Feature Store] --> Preproc & Preproc2
