@@ -3,6 +3,11 @@ title = "Machine Learning"
 authors = ["kaj"]
 language = "en"
 
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
 [output.html]
 edit-url-template = "https://github.com/knekvasil/library/edit/master/ml/src/{path}"
 git-repository-url = "https://github.com/knekvasil/library"
+additional-css = ["theme/css/katex.min.css"]
+additional-js = ["mermaid.min.js", "mermaid-init.js", "theme/js/katex.min.js", "theme/js/auto-render.min.js", "theme/js/katex-init.js"]
