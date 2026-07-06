@@ -752,16 +752,32 @@ RNN                          LSTM
 
 ### How do you frame an ambiguous business problem as an ML problem? What clarifying questions do you ask first (objective/metric, scale, latency, data availability)?
 
-```mermaid
-graph TD
-    B[Ambiguous<br/>Business Problem] --> Q1[What is the<br/>objective/metric?]
-    B --> Q2[What scale?<br/>Req/sec?]
-    B --> Q3[Latency budget?<br/>100ms or 10s?]
-    B --> Q4[Data available?<br/>Labels? Logs?]
-    B --> Q5[Constraints?<br/>Interpretability?]
-    Q1 & Q2 & Q3 & Q4 & Q5 --> M[Well-Defined ML Problem]
-    M --> Target[Target + Metric]
-    M --> Baseline[Baseline + Success Criteria]
+```bob
+     .------------------.
+     |    Ambiguous     |
+     | Business Problem |
+     '--------+---------'
+  +-----------+---------+
+  |     |     |     |   |
+  v     v     v     v   v
+.------. .------. .------. .------. .------.
+|What  | |What  | |Latency| |Data  | |Constr|
+|metric| |scale?| |budget?| |avail?| |aints?|
+'--+---' '--+---' '--+---' '--+---' '--+---'
+  +-------+-------+-------+-------+
+              |
+              v
+        .-----------.
+        |Well-Defined|
+        | ML Problem |
+        '-----+-----'
+         +----+----+
+         |         |
+         v         v
+   .---------. .--------.
+   | Target  | |Baseline|
+   |+ Metric | |+Success|
+   '---------' '--------'
 ```
 
 - Translate business goal to a well-defined ML target + metric (e.g., "increase revenue" → "predict purchase probability, optimize for expected revenue")
@@ -858,15 +874,37 @@ graph TD
 
 ### Design a fraud / anomaly detection system (e.g., for payments).
 
-```mermaid
-graph TD
-    T[Transaction] --> |Features| M[Scoring Model<br/>XGBoost / Rules]
-    M --> |Score > High Threshold| Block[Block]
-    M --> |Score > Low Threshold| Review[Flag for Review]
-    M --> |Score < Low Threshold| Approve[Approve]
-    Review --> Human[Human Review → Label]
-    Human --> Feedback[Feedback → Retrain]
-    Block --> Alert[Alert + Log]
+```bob
+.-----------.
+|Transaction|
+'-----+-----'
+      |
+      v
+.-----------.
+|  Scoring  |
+|  Model    |
+'-----+-----'
+  +---+---+
+  |   |   |
+  v   v   v
+.---. .-------. .------.
+|Blk| |Review | |Appr. |
+'---+ '---+---' '------'
+    |     |
+    |     v
+    | .-------.
+    | | Human |
+    | | Review|
+    | '---+---'
+    |     |
+    |     v
+    | .-------.
+    | |Retrain|
+    | '-------'
+    v
+.-------.
+| Alert |
+'-------'
 ```
 
 - **Extreme class imbalance:** ~0.1% fraudulent transactions; need high recall at acceptable precision
@@ -881,15 +919,43 @@ graph TD
 
 ### Design a search / ranking system (e.g., e-commerce search ranking or autocomplete/type-ahead).
 
-```mermaid
-graph LR
-    Q[Query] --> UQ[Query Understanding<br/>Spell Correct / Expand]
-    UQ --> R1[BM25<br/>Text Retrieval]
-    UQ --> R2[Embedding<br/>ANN Retrieval]
-    R1 & R2 --> Fusion[Fusion + Ranking]
-    Fusion --> Features[Feature Engineering]
-    Features --> LTR[Learning-to-Rank<br/>LambdaMART / DNN]
-    LTR --> Results[Top-k Results]
+```bob
+.------.   .-----------.
+| Query|-->|Query Und. |
+'------'   |Spell Check|
+            '-----+-----'
+          +--------+--------+
+          |                  |
+          v                  v
+.---------.            .---------.
+| BM25    |            |Embedding|
+| Text    |            | ANN     |
+'----+----'            '----+----'
+     +------+ +-------+
+            |
+            v
+      .-----------.
+      | Fusion &  |
+      |  Ranking  |
+      '-----+-----'
+            |
+            v
+      .-----------.
+      | Feature   |
+      | Engineer  |
+      '-----+-----'
+            |
+            v
+      .-----------.
+      | Learn-to- |
+      | Rank      |
+      '-----+-----'
+            |
+            v
+      .-----------.
+      | Top-k     |
+      | Results   |
+      '-----------'
 ```
 
 - **Retrieval stage:** BM25 for text matching + embedding-based retrieval (dual encoder with ANN) for semantic search
@@ -914,16 +980,30 @@ graph LR
 
 ### Design a spam / abuse / harmful-content classifier (e.g., comment moderation or spam detection).
 
-```mermaid
-graph TD
-    C[Content] --> Classify[Classifier<br/>BERT / Rules]
-    Classify --> |Score > Safe Threshold| Show[Published]
-    Classify --> |Score > Borderline| Human[Human Review Queue]
-    Classify --> |Score < Safe Threshold| Block[Hidden / Flagged]
-    Human --> Review[Reviewer Decision]
-    Review --> |Approve| Show
-    Review --> |Reject| Block
-    Review --> Retrain[Feedback → Retrain]
+```bob
+.-------.
+|Content|
+'---+---'
+    |
+    v
+.--------.
+|Classify|
+|BERT/Rul|
+'---+----'
+  +---+---+
+  |   |   |
+  v   v   v
+.---. .---. .---.
+|Pub| |Hum| |Blk|
+|lis| |Rev| |   |
+'---' '---+' '---'
+      |   |
+      |   v
+      | .---.
+      | |Ret|
+      | '---'
+      |   ^
+      +---+
 ```
 
 - **Classification levels:** Spam, toxic language, hate speech, misinformation; can be hierarchical or multi-label
@@ -960,17 +1040,32 @@ graph TD
 
 ### What is training/serving skew? What causes it and how do you fix it (feature store, shared preprocessing)?
 
-```mermaid
-graph TD
-    subgraph Training
-        D[Raw Data] --> Preproc[Preprocessing] --> Train[Train Model]
-    end
-    subgraph Serving
-        Req[Request] --> Preproc2[Preprocessing<br/>Different Code?] --> Serve[Serve Prediction]
-    end
-    Preproc -.-> |Skew if<br/>inconsistent| Preproc2
-    FS[Feature Store] --> Preproc & Preproc2
-    style FS fill:#2ecc71
+```bob
+   Training                    Serving
+.--------.                   .--------.
+| Raw    |                   | Request|
+| Data   |                   '---+----'
+'---+----'                       |
+     |                           v
+     v                      .--------.
+.--------.                  |Preproc |
+|Preproc |                  | Diff?  |
+'---+----'                  '---+----'
+     |    -.                    |
+     |      '-.                 |
+     v         '->              v
+.--------.              .-----------.
+| Train  |              |  Predict  |
+| Model  |              '-----------'
+'--------'
+.-----------.
+|   Feature |
+|   Store   |
+'-----+-----'
+  +---+----+
+  |        |
+  v        v
+Preproc  Preproc2
 ```
 
 - **Training/serving skew:** Difference between model performance during training vs inference caused by inconsistent data processing
@@ -1017,15 +1112,27 @@ graph TD
 
 ### How do you monitor a model in production (model performance, data quality, system health)? What metrics and alerts?
 
-```mermaid
-graph TD
-    subgraph Monitoring Pillars
-        MP[Model Performance<br/>Accuracy, AUC, Business Metric]
-        DQ[Data Quality<br/>Missing Rates, PSI, Outliers]
-        SH[System Health<br/>Latency, Throughput, Errors]
-    end
-    MP & DQ & SH --> Dashboard[Dashboard<br/>Prometheus + Grafana]
-    Dashboard --> |Anomaly Detected| Alert[Alert ✓ Auto-Rollback]
+```bob
+   Monitoring Pillars
+.--------. .--------. .--------.
+| Model  | | Data   | | System |
+|Perform | |Quality | | Health |
+|Acc/AUC | |Missing | |Latency |
+'---+----' '---+----' '---+----'
+    +----------+---------+
+               |
+               v
+      .-----------------.
+      |   Dashboard     |
+      |  Prometheus     |
+      |  + Grafana      |
+      '--------+--------'
+               |
+               v
+      .-----------------.
+      | Alert + Auto-   |
+      | Rollback        |
+      '-----------------'
 ```
 
 - **Model performance:** Track prediction accuracy / business metric when ground truth arrives; may have delayed feedback (e.g., 30-day conversion window)
@@ -1038,20 +1145,16 @@ graph TD
 
 ### How do you design a CI/CD pipeline for ML models? How do you version models and data?
 
-```mermaid
-graph LR
-    Git[Git Push] --> Test[Data Validation<br/>+ Tests]
-    Test --> Train[Train / Tune]
-    Train --> Eval[Evaluate vs Production<br/>Offline Metrics]
-    Eval --> |Pass| Canary[Canary Deploy<br/>1% Traffic]
-    Eval --> |Fail| Git
-    Canary --> Shadow[Shadow Deploy<br/>50% Traffic]
-    Shadow --> |OK| Prod[Full Rollout]
-    Shadow --> |Degraded| Rollback[Auto-Rollback]
-    style Git fill:#3498db
-    style Train fill:#e74c3c
-    style Eval fill:#f39c12
-    style Prod fill:#2ecc71
+```bob
+.------.   .--------.   .------.   .--------.   .------.   .------.   .------.
+|Git   |-->|Data    |-->|Train |-->|Eval vs |-->|Canary|-->|Shadow|-->|Prod  |
+|Push  |   |Valid.  |   |/Tune |   |Prod    |   |1%    |   |50%   |   |      |
+'------'   '--------'   '------'   '---+----'   '------'   '------'   '------'
+     ^                                 |
+     '---------------------------------'
+                                                     .------.
+                                                     |Rollbk|
+                                                     '------'
 ```
 
 - **Pipeline stages:**
@@ -1084,17 +1187,28 @@ graph LR
 
 ### Batch vs online (stream) inference — what are the trade-offs? Static vs dynamic deployment?
 
-```mermaid
-graph TD
-    subgraph Batch Inference
-        D[Data Lake] --> |Nightly Job| Precompute[Precompute Predictions]
-        Precompute --> Store[Key-Value Store]
-        Store --> |Low Latency Lookup| ServeB[Serve]
-    end
-    subgraph Online Inference
-        Req[Request] --> |Real-Time| Model[Serve Prediction]
-        Model --> |<100ms| ServeO[Serve]
-    end
+```bob
+Batch Inference              Online Inference
+.--------.                   .--------.
+| Data   |                   | Request|
+| Lake   |                   '---+----'
+'---+----'                       |
+     |                           v
+     v                      .--------.
+.--------.                  | Model  |
+|Precomp.|                  |<100ms  |
+'---+----'                  '---+----'
+     |                           |
+     v                           v
+.--------.                   .--------.
+|  KV    |                   | Serve  |
+| Store  |                   '--------'
+'---+----'
+     |
+     v
+.--------.
+| Serve  |
+'--------'
 ```
 
 - **Batch inference:** Precompute predictions offline (e.g., nightly) → store in DB for fast lookup; high throughput, lower cost per prediction, but stale if data changes
@@ -1108,22 +1222,35 @@ graph TD
 
 ### Explain data parallelism vs model parallelism (and tensor/pipeline parallelism). When is pure data parallelism insufficient?
 
-```mermaid
-graph TD
-    subgraph "Data Parallelism"
-        B[Batch] --> S1[Shard] --> M1[Model Replica 1]
-        B --> S2[Shard] --> M2[Model Replica 2]
-        B --> SN[Shard] --> MN[Model Replica N]
-        M1 & M2 & MN --> Sync[Sync Gradients]
-    end
-    subgraph "Model Parallelism"
-        L1[Layer 1 - GPU 1] --> L2[Layer 2 - GPU 2]
-        L2 --> L3[Layer 3 - GPU 3]
-    end
-    subgraph "Pipeline Parallelism"
-        Stage1[Stage 1: Layers 1-3] --> Stage2[Stage 2: Layers 4-6]
-        Stage2 --> Stage3[Stage 3: Layers 7-9]
-    end
+```bob
+Data Parallelism:
+.---. .---. .---.
+|Sh1| |Sh2| |ShN|
+'---+ '---+ '---'
+  |     |     |
+  v     v     v
+.-.   .-.   .-.
+|M1|  |M2|  |MN|
+'-+'- '-+'--'-+'
+  +-----+----+
+       |
+       v
+.-----------.
+|Sync Grad.|
+'-----------'
+
+Model Parallelism:
+.---. .---. .---.
+|L1 |->|L2 |->|L3 |
+|GPU1| |GPU2| |GPU3|
+'---' '---' '---'
+
+Pipeline Parallelism:
+.--------. .--------. .--------.
+|Stage 1 |->|Stage 2 |->|Stage 3 |
+|Layers  | |Layers  | |Layers  |
+| 1-3    | | 4-6    | | 7-9    |
+'--------' '--------' '--------'
 ```
 
 - **Data parallelism:** Replicate model on $N$ devices, shard the batch across devices, sync gradients → scales with batch size, requires model to fit on one device

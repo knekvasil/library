@@ -2,7 +2,6 @@
 set -e
 
 MDBOOK_URL="https://github.com/rust-lang/mdBook/releases/latest/download/mdbook-v0.5.3-x86_64-unknown-linux-gnu.tar.gz"
-MERMAID_URL="https://github.com/badboy/mdbook-mermaid/releases/latest/download/mdbook-mermaid-v0.17.0-x86_64-unknown-linux-gnu.tar.gz"
 
 # Install mdbook if not already present
 if ! command -v mdbook &>/dev/null; then
@@ -12,15 +11,6 @@ if ! command -v mdbook &>/dev/null; then
   MDBOOK=/tmp/mdbook
 else
   MDBOOK=mdbook
-fi
-
-# Install mdbook-mermaid if not already present
-if ! command -v mdbook-mermaid &>/dev/null; then
-  echo "Installing mdbook-mermaid..."
-  curl -fsSL "$MERMAID_URL" -o /tmp/mdbook-mermaid.tar.gz
-  tar xzf /tmp/mdbook-mermaid.tar.gz -C /tmp/ mdbook-mermaid
-  chmod +x /tmp/mdbook-mermaid
-  export PATH="/tmp:$PATH"
 fi
 
 # Install Rust + mdbook-svgbob if not already present
