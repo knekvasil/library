@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-MDBOOK_URL="https://github.com/rust-lang/mdBook/releases/latest/download/mdbook-v0.5.3-x86_64-unknown-linux-gnu.tar.gz"
+MDBOOK_VERSION="v0.5.4"
+MDBOOK_URL="https://github.com/rust-lang/mdBook/releases/download/${MDBOOK_VERSION}/mdbook-${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
 
 # Install mdbook if not already present
 if ! command -v mdbook &>/dev/null; then
