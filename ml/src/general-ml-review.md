@@ -45,29 +45,29 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Explain cross-validation and its importance. Why don't we see more cross-validation in deep learning?
 
-```mermaid
-graph TD
-    D[Data]
-    D --Fold 1--> T1[Train]
-    D --Fold 1--> V1[Val]
-    D --Fold 2--> T2[Train]
-    D --Fold 2--> V2[Val]
-    D --Fold 3--> T3[Train]
-    D --Fold 3--> V3[Val]
-    D --Fold 4--> T4[Train]
-    D --Fold 4--> V4[Val]
-    D --Fold 5--> T5[Train]
-    D --Fold 5--> V5[Val]
-    V1 --> M1[Model 1]
-    V2 --> M2[Model 2]
-    V3 --> M3[Model 3]
-    V4 --> M4[Model 4]
-    V5 --> M5[Model 5]
-    M1 --> Avg[Average Score]
-    M2 --> Avg
-    M3 --> Avg
-    M4 --> Avg
-    M5 --> Avg
+```bob
+     .----------.
+     |   Data   |
+     '----+-----'
+          |         
+    +-----+-----+   
+    |     |     |   
+    v     v     v   
+.------. .------. .------.
+|Fold 1| |Fold 2| |Fold 3|
+'---+--' '--+---' '--+---'
+    |        |        |   
+    v        v        v   
+.------. .------. .------.
+|Model | |Model | |Model |
+'--+---' '--+---' '--+---'
+    |        |        |   
+    '--------+--------'   
+             |            
+             v            
+       .-----------.      
+       |   Avg     |      
+       '-----------'      
 ```
 
 - **k-fold CV:** Split data into k folds, train on k-1, validate on 1, repeat k times
@@ -309,17 +309,29 @@ graph TD
 
 ### What is the difference between random forests and decision trees? How does a random forest reduce variance?
 
-```mermaid
-graph TD
-    subgraph Decision Tree
-        DT[Single Tree] --> HighV[High Variance<br/>Overfits]
-    end
-    subgraph Random Forest
-        D[Data] --> B1[Bootstrap 1] --> T1[Tree 1]
-        D --> B2[Bootstrap 2] --> T2[Tree 2]
-        D --> Bn[...] --> Tn[Tree n]
-        T1 & T2 & Tn --> Avg[Average → Lower Variance]
-    end
+```bob
+                    .-------.
+                    | Data  |
+                    '--+----'
+          +-----------+--------+
+          |           |        |
+          v           v        v
+     .---------. .--------. .------.
+     |Bootstrap| |Bootstrap| |  ... |
+     '---+-----' '---+----' '------'
+         |           |         |
+         v           v         v
+     .---------. .--------. .------.
+     | Tree 1  | | Tree 2 | |Tree n|
+     '---+-----' '---+----' '------'
+         |           |         |
+         '-----+-----+---------'
+               |
+               v
+          .----------.
+          | Average  |
+          |(lower var)|
+          '----------'
 ```
 
 - **Decision tree:** Single tree, low bias but high variance — overfits easily to training data
@@ -333,18 +345,34 @@ graph TD
 
 ### What is the difference between bagging and boosting? Compare random forest vs XGBoost.
 
-```mermaid
-graph LR
-    subgraph Bagging
-        D1[Data] --> B1[Sample 1] --> M1[Model 1]
-        D1 --> B2[Sample 2] --> M2[Model 2]
-        D1 --> Bk[...] --> Mk[Model k]
-        M1 & M2 & Mk --> Par[Parallel → Reduce Variance]
-    end
-    subgraph Boosting
-        D2[Data] --> S1[Model 1] --> Err[Residuals] --> S2[Model 2] --> Err2[Residuals] --> S3[...]
-        S1 & S2 & S3 --> Seq[Sequential → Reduce Bias]
-    end
+```bob
+  Bagging                      Boosting
+.--------.                    .--------.
+| Data   |                    | Data   |
+'--+-----'                    '--+-----'
+   |                              |
+   v                              v
+.--------.                    .--------.
+| Sample1|                    | Model 1|
+'--+-----'                    '--+-----'
+   |                              |
+   v                              v
+.--------.                    .--------.
+| Model1 |                    |Residual|
+'--+-----'                    '--+-----'
+   |                              |
+   |                              v
+   |                         .--------.
+   |                         | Model 2|
+   |                         '--+-----'
+   v                              |
+.------------.                    |
+|  Parallel  |                    |
+|  Averaging |                    v
+| ↓ Variance |              .-----------.
+'------------'              |Sequential |
+                            | ↓ Bias    |
+                            '-----------'
 ```
 
 - **Bagging:** Train models independently in parallel on bootstrapped samples; averages predictions → reduces variance
@@ -375,18 +403,26 @@ graph LR
 
 ### Explain the support vector machine and the kernel trick. How do you generalize a 2-class SVM to multi-class?
 
-```mermaid
-flowchart TD
-    subgraph Binary SVM
-        C[Input Space]
-        C --> H[Higher-Dim Space]
-        H --> M[Max-Margin Hyperplane]
-        SV[Support Vectors] --> M
-    end
-    subgraph Multi-Class
-        OvO[One-vs-One Classifiers] --> Vote[Majority Vote]
-        OvR[One-vs-Rest Classifiers] --> Max[Pick Highest Score]
-    end
+```bob
+ Binary SVM                        Multi-Class
+.------------.                   .-------------.
+|Input Space |                   | One-vs-One  |
+'-----+------'                   '-----+-------'
+      |                                |
+      v                                v
+.------------.                   .-------------.
+|Higher-Dim  |                   |Majority Vote|
+| Feature    |                   '-------------'
+| Space      |                   .-------------.
+'-----+------'                   | One-vs-Rest |
+      |                          '-----+-------'
+      v                               |
+.------------.                        v
+| Max-Margin |                   .-------------.
+| Hyperplane |                   | Pick Highest|
+'------------'                   | Confidence  |
+| SV support |                   '-------------|
+'------------'
 ```
 
 - **SVM:** Finds the hyperplane that maximizes the margin between classes; only support vectors (points closest to boundary) matter
@@ -516,17 +552,12 @@ flowchart TD
 
 ### Explain the architecture of a CNN. How do CNNs differ from traditional neural networks in processing images?
 
-```mermaid
-graph LR
-    I[Input Image] --> C1[Conv Layer<br/>3x3 filters] --> P1[Pooling<br/>2x2 Max] --> C2[Conv Layer<br/>3x3 filters] --> P2[Pooling<br/>2x2 Max] --> F[Flatten] --> FC[Fully Connected] --> O[Output]
-    style I fill:#3498db
-    style C1 fill:#e74c3c
-    style P1 fill:#2ecc71
-    style C2 fill:#e74c3c
-    style P2 fill:#2ecc71
-    style F fill:#f39c12
-    style FC fill:#9b59b6
-    style O fill:#3498db
+```bob
+.--------. .--------. .--------. .--------. .--------. .--------. .--------. .--------.
+| Input  | |  Conv  | | Pool   | |  Conv  | | Pool   | |Flatten | |  FC    | | Output |
+| Image  |->| Layer  |->| 2x2   |->| Layer  |->| 2x2   |->|        |->| Layer  |->|        |
+|        | | 3x3 f  | | Max    | | 3x3 f  | | Max    | |        | |        | |        |
+'--------' '--------' '--------' '--------' '--------' '--------' '--------' '--------'
 ```
 
 - **CNN components:** Convolutional layers (learn local feature detectors with shared weights), pooling layers (downsample, reduce spatial dims), fully-connected classifier head
@@ -540,24 +571,20 @@ graph LR
 
 ### What are RNNs/LSTMs and how do they handle sequential data? How does an LSTM address vanishing gradients?
 
-```mermaid
-flowchart LR
-    subgraph RNN
-        X1[x t-1] --> H1[h t-1] --> H[h t]
-        X[x t] --> H
-        H --> H2[h t+1]
-        X2[x t+1] --> H2
-    end
-    subgraph LSTM
-        C1[C t-1] --> C[C t]
-        C1 --> G1[Forget Gate]
-        C --> C2[C t+1]
-        HL[h t-1] --> G[3 Gates]
-        XL[x t] --> G
-        G --> C
-        G --> Hout[h t]
-        C --> Hout
-    end
+```bob
+RNN                          LSTM
+.---.  .---.  .---.       .---.  .-------.  .---.
+|x  |->|h  |->|h  |       |C  |->|Forget |->|C  |
+|t-1|  |t-1|  |t |       |t-1|  | Gate  |  |t |
+'---'  '---'  '---'       '---'  '-------'  '---'
+.---.  .---.  .---.       .---.  .-------.  .---.
+|x  |  |h  |  |h  |       |h  |->|Input  |->|C  |
+|t  |  |t  |  |t+1|       |t-1|  | Gate  |  |t+1|
+'---'  '---'  '---'       '---'  '-------'  '---'
+.---.  .---.              .---.  .-------.  .---.
+|x  |  |h  |              |x  |->|3 Gates|->|h  |
+|t+1|  |t+1|              |t  |  '-------'  |t  |
+'---'  '---'              '---'             '---'
 ```
 
 - **RNN:** Hidden state $h_t = f(W_h h_{t-1} + W_x x_t)$ passes context across timesteps; suffers from vanishing gradients over long sequences
@@ -572,20 +599,33 @@ flowchart LR
 
 ### What is the transformer architecture and how does it work? Explain self-attention and multi-head attention (Q, K, V).
 
-```mermaid
-graph TD
-    subgraph "Single Attention Head"
-        In[Input] --> Q[Q Projection] & K[K Projection] & V[V Projection]
-        Q & K --> Score[Q·K^T / √dₖ]
-        Score --> Soft[Softmax]
-        Soft & V --> Out[Weighted Sum]
-    end
-    subgraph "Multi-Head"
-        H1[Head 1] --> Concat[Concat] --> Proj[Output Projection]
-        H2[Head 2] --> Concat
-        H3[Head 3] --> Concat
-        H4[Head 4] --> Concat
-    end
+```bob
+ Scaled Dot-Product Attn         Multi-Head
+.--------.                      .----. .----. .----. .----.
+| Input  |                      | H1 | | H2 | | H3 | | H4 |
+'---+----'                      '----' '----' '----' '----'
+    |                               |
+    v                               v
+.--------. .--------. .--------.  .--------.
+|Q Proj  | |K Proj  | |V Proj  |  | Concat |
+'---+----' '---+----' '--------'  '--------'
+    |          |                      |
+    '----+-----'                      v
+         v                     .-----------.
+   .-----------.               |  Output   |
+   |Q·K^T/√dₖ |               |Projection |
+   '-----+-----'               '-----------'
+         |
+         v
+   .--------.
+   |Softmax |
+   '---+----'
+        |
+        v
+   .--------.
+   |Weighted|
+   |  Sum   |
+   '--------'
 ```
 
 - **Transformer architecture:** Encoder-decoder (or encoder-only / decoder-only) with stacked blocks of self-attention + feed-forward + layer norm + residual connections
@@ -624,18 +664,31 @@ graph TD
 
 ### What is the difference between RAG and fine-tuning, and when would you use each?
 
-```mermaid
-graph TD
-    subgraph RAG
-        Q[Query] --> R[Retrieve from<br/>Knowledge Base]
-        R --> C[Context + Query<br/>→ LLM]
-        C --> A[Answer + Sources]
-    end
-    subgraph Fine-Tuning
-        D[Domain Data] --> FT[Update Weights<br/>via Training]
-        FT --> M[Specialized Model]
-        Q2[Query] --> M --> A2[Answer]
-    end
+```bob
+   RAG                          Fine-Tuning
+.--------.                    .------------.
+| Query  |                    | Domain Data|
+'----+---'                    '-----+------'
+     |                               |
+     v                               v
+.--------.                    .------------.
+|Retrieve|                    |   Update   |
+|  from  |                    |  Weights   |
+|Knowledge|                   '-----+------'
+'----+---'                          |
+     |                          .---v---.
+     v                          |Special-|
+.--------.                      | ized   |
+|Context |                      | Model  |
+|+ Query |                      '---+---'
+| →  LLM |                          ^
+'----+---'                     .---+---.
+     |                         | Query  |
+     v                         '-------'
+.--------.
+|Answer +|
+|Sources |
+'--------'
 ```
 
 - **RAG (Retrieval-Augmented Generation):** Retrieves relevant documents from an external knowledge base at inference time and injects them into the LLM's context; no weight changes
@@ -725,15 +778,40 @@ graph TD
 
 ### Design a recommendation system (e.g., product or music recommendations).
 
-```mermaid
-graph LR
-    U[User] --> |User Features| T[Tower A]
-    I[Item] --> |Item Features| T2[Tower B]
-    T & T2 --> Score[Dot Product<br/>Similarity Score]
-    Score --> ANN[ANN Retrieval<br/>Top-N Candidates]
-    ANN --> Rank[Ranking Model<br/>CTR / Engagement]
-    Rank --> Serve[Serve Top-k]
-    Serve --> Feedback[Feedback → Retrain]
+```bob
+.------.    .-------.
+| User |    | Item  |
+'--+---'    '---+---'
+   |            |
+   v            v
+.------.    .-------.
+| Tower|    | Tower |
+|  A   |    |   B   |
+'--+---'    '---+---'
+   '----+-------'
+        |
+        v
+  .------------.
+  | Dot Product|
+  | Similarity |
+  '-----+------'
+        |
+        v
+  .------------.
+  | ANN Retriev|
+  | Top-N Cand.|
+  '-----+------'
+        |
+        v
+  .------------.
+  |  Ranking   |
+  | CTR/Engage |
+  '-----+------'
+        |
+        v
+  .------------.
+  | Serve Top-k|
+  '------------'
 ```
 
 - **Two-stage architecture:** Candidate generation → ranking
