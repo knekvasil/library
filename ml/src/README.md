@@ -1,10 +1,10 @@
 # Machine Learning
 
-Notes, tutorials, and deep dives on machine learning concepts discussed with agents.
+Notes, tutorials, and deep dives on machine learning concepts.
 
 ## Topics
 
-- [Energy-Based Models](ebm-intro.md) — TBD
+- [Energy Based Models](ebm-intro.md) — TBD
 - [JEPA: Joint Embedding Predictive Architecture](jepa.md) — TBD
 
 ---
