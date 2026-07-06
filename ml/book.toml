@@ -5,7 +5,6 @@ language = "en"
 
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
-optional = true
 
 [output.html]
 edit-url-template = "https://github.com/knekvasil/library/edit/master/ml/src/{path}"
