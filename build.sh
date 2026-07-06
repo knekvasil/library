@@ -3,7 +3,6 @@ set -e
 
 MDBOOK_URL="https://github.com/rust-lang/mdBook/releases/latest/download/mdbook-v0.5.3-x86_64-unknown-linux-gnu.tar.gz"
 MERMAID_URL="https://github.com/badboy/mdbook-mermaid/releases/latest/download/mdbook-mermaid-v0.17.0-x86_64-unknown-linux-gnu.tar.gz"
-SVGBOB_URL="https://github.com/boozook/mdbook-svgbob/releases/latest/download/mdbook-svgbob-v0.3.0-x86_64-unknown-linux-gnu.tar.gz"
 
 # Install mdbook if not already present
 if ! command -v mdbook &>/dev/null; then
@@ -26,11 +25,8 @@ fi
 
 # Install mdbook-svgbob if not already present
 if ! command -v mdbook-svgbob &>/dev/null; then
-  echo "Installing mdbook-svgbob..."
-  curl -fsSL "$SVGBOB_URL" -o /tmp/mdbook-svgbob.tar.gz
-  tar xzf /tmp/mdbook-svgbob.tar.gz -C /tmp/ mdbook-svgbob
-  chmod +x /tmp/mdbook-svgbob
-  export PATH="/tmp:$PATH"
+  echo "Installing mdbook-svgbob (cargo)..."
+  cargo install mdbook-svgbob --version 0.3.0 2>&1 || echo "svgbob install failed, build will continue with optional=true"
 fi
 
 # Build each book
