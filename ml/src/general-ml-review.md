@@ -41,13 +41,11 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 - **When to use L1:** You expect sparse features or want interpretability
 - **When to use L2:** All features are relevant, no sparsity needed
 
-![](images/bob_L1_L2_regularization.svg)
 
 ---
 
 ### Explain cross-validation and its importance. Why don't we see more cross-validation in deep learning?
 
-![](images/bob_kfold_cv.svg)
 
 - **k-fold CV:** Split data into k folds, train on k-1, validate on 1, repeat k times
 - **Stratified CV:** Preserves class proportions in each fold
@@ -175,7 +173,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 - **Weakly-supervised:** Noisy/incomplete labels → train despite label noise (e.g., using hashtags as image labels)
 - **Active learning:** Model selects which data points to label next → maximize label efficiency (e.g., uncertainty sampling)
 
-![](images/bob_learning_paradigms.svg)
 
 ---
 
@@ -186,7 +183,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 - **Trade-off:** Generative models use data more efficiently (can learn from fewer labels), discriminative models often have better accuracy given enough data
 - **Practical rule:** Use generative if you need to sample from the distribution or have limited labels; use discriminative for pure prediction tasks with sufficient data
 
-![](images/bob_gen_disc.svg)
 
 ---
 
@@ -288,13 +284,11 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
   - Update: $w = w - \eta X^T(\sigma(Xw) - y)$
 - **Why log-loss is convex:** The Hessian is positive semi-definite → guaranteed global optimum
 
-![](images/bob_linear_logistic.svg)
 
 ---
 
 ### What is the difference between random forests and decision trees? How does a random forest reduce variance?
 
-![](images/bob_random_forest.svg)
 
 - **Decision tree:** Single tree, low bias but high variance — overfits easily to training data
 - **Random forest:** Ensemble of decision trees trained on bootstrapped samples with random feature subset per split
@@ -307,7 +301,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### What is the difference between bagging and boosting? Compare random forest vs XGBoost.
 
-![](images/bob_bagging_boosting.svg)
 
 - **Bagging:** Train models independently in parallel on bootstrapped samples; averages predictions → reduces variance
 - **Boosting:** Train models sequentially, each correcting the previous model's errors (by fitting residuals or gradients) → reduces bias
@@ -337,7 +330,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Explain the support vector machine and the kernel trick. How do you generalize a 2-class SVM to multi-class?
 
-![](images/bob_svm.svg)
 
 - **SVM:** Finds the hyperplane that maximizes the margin between classes; only support vectors (points closest to boundary) matter
 - **Kernel trick:** Implicitly map inputs to higher-dimensional space using a kernel function (RBF, polynomial) without computing the coordinates → enables non-linear decision boundaries
@@ -351,7 +343,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 ### Explain k-means clustering. How would you choose $k$, and how do you evaluate it if labels are known vs unknown?
 - **k-means algorithm (Lloyd's):** Initialize $k$ centroids, assign each point to nearest centroid, recompute centroids as mean of assigned points, repeat until convergence
 
-![](images/bob_kmeans.svg)
 
 - **Choosing $k$:**
   - **Elbow method:** Plot inertia (within-cluster sum of squares) vs $k$, look for "elbow"
@@ -414,7 +405,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 - **Backpropagation:** Efficient application of the chain rule to compute gradients of the loss w.r.t. all weights in the network (forward pass to compute loss, backward pass to propagate gradients layer by layer)
 
-![](images/bob_backprop.svg)
 
 - **Drawbacks:**
   - **Vanishing/exploding gradients:** Gradients shrink/grow exponentially with depth
@@ -471,7 +461,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Explain the architecture of a CNN. How do CNNs differ from traditional neural networks in processing images?
 
-![](images/bob_cnn.svg)
 
 - **CNN components:** Convolutional layers (learn local feature detectors with shared weights), pooling layers (downsample, reduce spatial dims), fully-connected classifier head
 - **Key differences from MLPs:**
@@ -484,7 +473,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### What are RNNs/LSTMs and how do they handle sequential data? How does an LSTM address vanishing gradients?
 
-![](images/bob_rnn_lstm.svg)
 
 - **RNN:** Hidden state $h_t = f(W_h h_{t-1} + W_x x_t)$ passes context across timesteps; suffers from vanishing gradients over long sequences
 - **LSTM:** Introduces a cell state $c_t$ (information highway) controlled by three gates:
@@ -498,7 +486,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### What is the transformer architecture and how does it work? Explain self-attention and multi-head attention (Q, K, V).
 
-![](images/bob_attention.svg)
 
 - **Transformer architecture:** Encoder-decoder (or encoder-only / decoder-only) with stacked blocks of self-attention + feed-forward + layer norm + residual connections
 - **Self-attention (scaled dot-product):** $Q$, $K$, $V$ projections from input → $\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V$
@@ -536,7 +523,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### What is the difference between RAG and fine-tuning, and when would you use each?
 
-![](images/bob_rag_finetune.svg)
 
 - **RAG (Retrieval-Augmented Generation):** Retrieves relevant documents from an external knowledge base at inference time and injects them into the LLM's context; no weight changes
 - **Fine-tuning:** Updates model weights on domain-specific data to bake behavior/knowledge into parameters
@@ -599,7 +585,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### How do you frame an ambiguous business problem as an ML problem? What clarifying questions do you ask first (objective/metric, scale, latency, data availability)?
 
-![](images/bob_framing_ml.svg)
 
 - Translate business goal to a well-defined ML target + metric (e.g., "increase revenue" → "predict purchase probability, optimize for expected revenue")
 - **Clarifying questions:**
@@ -615,7 +600,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Design a recommendation system (e.g., product or music recommendations).
 
-![](images/bob_recommendation.svg)
 
 - **Two-stage architecture:** Candidate generation → ranking
 - **Candidate generation:** Collaborative filtering (user-item interactions), content-based filtering (item features), two-tower retrieval model
@@ -661,7 +645,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Design a fraud / anomaly detection system (e.g., for payments).
 
-![](images/bob_kfold_cv.svg)
 
 - **Extreme class imbalance:** ~0.1% fraudulent transactions; need high recall at acceptable precision
 - **Features:** Transaction amount, location, device fingerprint, user history, velocity (time since last transaction)
@@ -675,7 +658,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Design a search / ranking system (e.g., e-commerce search ranking or autocomplete/type-ahead).
 
-![](images/bob_kfold_cv.svg)
 
 - **Retrieval stage:** BM25 for text matching + embedding-based retrieval (dual encoder with ANN) for semantic search
 - **Ranking stage:** Learning-to-rank (LambdaMART, RankNet, ListNet) with features: text relevance, popularity, price, user history, click-through data
@@ -699,7 +681,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Design a spam / abuse / harmful-content classifier (e.g., comment moderation or spam detection).
 
-![](images/bob_kfold_cv.svg)
 
 - **Classification levels:** Spam, toxic language, hate speech, misinformation; can be hierarchical or multi-label
 - **Label sourcing:** User reports, human reviewers, active learning to prioritize ambiguous cases
@@ -735,7 +716,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### What is training/serving skew? What causes it and how do you fix it (feature store, shared preprocessing)?
 
-![](images/bob_kfold_cv.svg)
 
 - **Training/serving skew:** Difference between model performance during training vs inference caused by inconsistent data processing
 - **Common causes:**
@@ -771,7 +751,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 - **Feature store:** Centralized repository for feature definitions, computation, and serving; separates feature logic from model code
 
-![](images/bob_feature_store.svg)
 
 - **Benefits:**
   - **Consistency:** Same features for training and serving → eliminates training/serving skew
@@ -784,7 +763,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### How do you monitor a model in production (model performance, data quality, system health)? What metrics and alerts?
 
-![](images/bob_monitoring.svg)
 
 - **Model performance:** Track prediction accuracy / business metric when ground truth arrives; may have delayed feedback (e.g., 30-day conversion window)
 - **Data quality:** Missing feature rates, null values, out-of-range values, distribution shifts (PSI for each feature)
@@ -796,7 +774,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### How do you design a CI/CD pipeline for ML models? How do you version models and data?
 
-![](images/bob_cicd.svg)
 
 - **Pipeline stages:**
   1. **Data validation:** Schema checks, anomaly detection, train/test split integrity
@@ -828,7 +805,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Batch vs online (stream) inference — what are the trade-offs? Static vs dynamic deployment?
 
-![](images/bob_batch_online.svg)
 
 - **Batch inference:** Precompute predictions offline (e.g., nightly) → store in DB for fast lookup; high throughput, lower cost per prediction, but stale if data changes
 - **Online (stream) inference:** Predict in real-time via API → fresh predictions, lower latency requirements ($<100$ms), higher operational complexity
@@ -841,7 +817,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 ### Explain data parallelism vs model parallelism (and tensor/pipeline parallelism). When is pure data parallelism insufficient?
 
-![](images/bob_parallelism.svg)
 
 - **Data parallelism:** Replicate model on $N$ devices, shard the batch across devices, sync gradients → scales with batch size, requires model to fit on one device
 - **Model parallelism:** Split model layers across devices → each device computes a subset of layers; necessary when model exceeds single device memory
@@ -869,7 +844,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 - **Frame:** Define the problem, metric, and baseline clearly
 
-![](images/bob_ml_lifecycle.svg)
 
 - **Data:** Describe data sources, labeling process, train/val/test split, data quality checks
 - **Model:** Justify model choice (why XGBoost vs neural net vs baseline), describe feature engineering
@@ -883,7 +857,6 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 
 - Use STAR format (Situation, Task, Action, Result)
 
-![](images/bob_star.svg)
 
 - Describe the failure: What were the symptoms? (e.g., latency spike, accuracy drop, user complaints)
 - **Diagnosis:** Monitoring data revealed training/serving skew, data drift, or a data pipeline bug
