@@ -1,19 +1,33 @@
-/* Dark mode adjustments for SVGs and diagrams */
+/* Theme-aware SVG and mermaid styling for mdBook themes.
+   Light themes: light, rust — no filter applied.
+   Dark themes: coal, navy, ayu — invert for readability. */
 
-@media (prefers-color-scheme: dark) {
-    /* Invert content images (SVG plots) for dark theme visibility */
-    .content img[src*="images/"] {
-        filter: invert(0.88) hue-rotate(180deg);
-    }
+/* Light themes: render as-is */
+html.light img[src*="images/"],
+html.rust img[src*="images/"] {
+    filter: none;
+}
 
-    /* Mermaid diagrams: use dark theme */
-    .mermaid {
-        filter: invert(0.88) hue-rotate(180deg);
-    }
+/* Dark themes: invert for readability */
+html.coal img[src*="images/"],
+html.navy img[src*="images/"],
+html.ayu img[src*="images/"] {
+    filter: invert(0.88) hue-rotate(180deg);
+}
 
-    /* Restore color fidelity for the confusion matrix heatmap (colormap-dependent) */
-    .content img[src*="confusion_matrix"],
-    .content img[src*="gradient_descent"] {
-        filter: invert(0.85) hue-rotate(180deg) saturate(1.2);
-    }
+/* Colormap-heavy plots need extra saturation to preserve distinction */
+html.coal img[src*="confusion_matrix"],
+html.navy img[src*="confusion_matrix"],
+html.ayu img[src*="confusion_matrix"],
+html.coal img[src*="gradient_descent"],
+html.navy img[src*="gradient_descent"],
+html.ayu img[src*="gradient_descent"] {
+    filter: invert(0.85) hue-rotate(180deg) saturate(1.2);
+}
+
+/* Mermaid diagrams: match the theme */
+html.coal .mermaid,
+html.navy .mermaid,
+html.ayu .mermaid {
+    filter: invert(0.88) hue-rotate(180deg);
 }
