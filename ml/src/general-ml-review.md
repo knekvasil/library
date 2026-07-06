@@ -46,21 +46,28 @@ Curated questions and answers for general Machine Learning Engineer interviews, 
 ### Explain cross-validation and its importance. Why don't we see more cross-validation in deep learning?
 
 ```mermaid
-graph LR
-    subgraph Full Dataset
-        D[Data]
-    end
-    D -->|Fold 1| T1[Train] & V1[Val]
-    D -->|Fold 2| T2[Train] & V2[Val]
-    D -->|Fold 3| T3[Train] & V3[Val]
-    D -->|Fold 4| T4[Train] & V4[Val]
-    D -->|Fold 5| T5[Train] & V5[Val]
+graph TD
+    D[Data]
+    D --Fold 1--> T1[Train]
+    D --Fold 1--> V1[Val]
+    D --Fold 2--> T2[Train]
+    D --Fold 2--> V2[Val]
+    D --Fold 3--> T3[Train]
+    D --Fold 3--> V3[Val]
+    D --Fold 4--> T4[Train]
+    D --Fold 4--> V4[Val]
+    D --Fold 5--> T5[Train]
+    D --Fold 5--> V5[Val]
     V1 --> M1[Model 1]
     V2 --> M2[Model 2]
     V3 --> M3[Model 3]
     V4 --> M4[Model 4]
     V5 --> M5[Model 5]
-    M1 & M2 & M3 & M4 & M5 --> Avg[Average Score]
+    M1 --> Avg[Average Score]
+    M2 --> Avg
+    M3 --> Avg
+    M4 --> Avg
+    M5 --> Avg
 ```
 
 - **k-fold CV:** Split data into k folds, train on k-1, validate on 1, repeat k times
@@ -369,15 +376,16 @@ graph LR
 ### Explain the support vector machine and the kernel trick. How do you generalize a 2-class SVM to multi-class?
 
 ```mermaid
-graph TD
-    subgraph "Binary SVM"
-        C[Input Space] --> |Kernel Trick| H[Higher-Dim Feature Space]
+flowchart TD
+    subgraph Binary SVM
+        C[Input Space]
+        C --> H[Higher-Dim Space]
         H --> M[Max-Margin Hyperplane]
         SV[Support Vectors] --> M
     end
-    subgraph "Multi-Class"
-        OvO[One-vs-One<br/>N(N-1)/2 classifiers] --> Vote[Majority Vote]
-        OvR[One-vs-Rest<br/>N classifiers] --> Max[Pick Highest Confidence]
+    subgraph Multi-Class
+        OvO[One-vs-One Classifiers] --> Vote[Majority Vote]
+        OvR[One-vs-Rest Classifiers] --> Max[Pick Highest Score]
     end
 ```
 
@@ -511,14 +519,14 @@ graph TD
 ```mermaid
 graph LR
     I[Input Image] --> C1[Conv Layer<br/>3x3 filters] --> P1[Pooling<br/>2x2 Max] --> C2[Conv Layer<br/>3x3 filters] --> P2[Pooling<br/>2x2 Max] --> F[Flatten] --> FC[Fully Connected] --> O[Output]
-    style I fill:#3498db20
-    style C1 fill:#e74c3c20
-    style P1 fill:#2ecc7120
-    style C2 fill:#e74c3c20
-    style P2 fill:#2ecc7120
-    style F fill:#f39c1220
-    style FC fill:#9b59b620
-    style O fill:#3498db20
+    style I fill:#3498db
+    style C1 fill:#e74c3c
+    style P1 fill:#2ecc71
+    style C2 fill:#e74c3c
+    style P2 fill:#2ecc71
+    style F fill:#f39c12
+    style FC fill:#9b59b6
+    style O fill:#3498db
 ```
 
 - **CNN components:** Convolutional layers (learn local feature detectors with shared weights), pooling layers (downsample, reduce spatial dims), fully-connected classifier head
@@ -533,21 +541,22 @@ graph LR
 ### What are RNNs/LSTMs and how do they handle sequential data? How does an LSTM address vanishing gradients?
 
 ```mermaid
-graph LR
+flowchart LR
     subgraph RNN
-        Xt1[x(t-1)] --> Ht1[h(t-1)] --> Ht[h(t)]
-        Xt[x(t)] --> Ht
-        Ht --> Ht2[h(t+1)]
-        Xt2[x(t+1)] --> Ht2
+        X1[x t-1] --> H1[h t-1] --> H[h t]
+        X[x t] --> H
+        H --> H2[h t+1]
+        X2[x t+1] --> H2
     end
     subgraph LSTM
-        Ct1[C(t-1)] --> |Forget Gate| Ct[C(t)]
-        Ct --> |Input Gate| Ct2[C(t+1)]
-        HtL[h(t-1)] --> Gates[3 Gates<br/>Forget, Input, Output]
-        XtL[x(t)] --> Gates
-        Gates --> Ct
-        Gates --> HtL2[h(t)]
-        Ct --> HtL2
+        C1[C t-1] --> C[C t]
+        C1 --> G1[Forget Gate]
+        C --> C2[C t+1]
+        HL[h t-1] --> G[3 Gates]
+        XL[x t] --> G
+        G --> C
+        G --> Hout[h t]
+        C --> Hout
     end
 ```
 
@@ -883,7 +892,7 @@ graph TD
     end
     Preproc -.-> |Skew if<br/>inconsistent| Preproc2
     FS[Feature Store] --> Preproc & Preproc2
-    style FS fill:#2ecc7120
+    style FS fill:#2ecc71
 ```
 
 - **Training/serving skew:** Difference between model performance during training vs inference caused by inconsistent data processing
@@ -961,10 +970,10 @@ graph LR
     Canary --> Shadow[Shadow Deploy<br/>50% Traffic]
     Shadow --> |OK| Prod[Full Rollout]
     Shadow --> |Degraded| Rollback[Auto-Rollback]
-    style Git fill:#3498db20
-    style Train fill:#e74c3c20
-    style Eval fill:#f39c1220
-    style Prod fill:#2ecc7120
+    style Git fill:#3498db
+    style Train fill:#e74c3c
+    style Eval fill:#f39c12
+    style Prod fill:#2ecc71
 ```
 
 - **Pipeline stages:**
