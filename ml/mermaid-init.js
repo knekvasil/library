@@ -16,7 +16,7 @@
         }
     }
 
-    const theme = lastThemeWasLight ? 'default' : 'dark';
+    const theme = lastThemeWasLight ? 'dark' : 'default';
     mermaid.initialize({ startOnLoad: true, theme });
 
     // Simplest way to make mermaid re-render the diagrams in the new theme is via refreshing the page
