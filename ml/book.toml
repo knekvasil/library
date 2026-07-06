@@ -5,6 +5,7 @@ language = "en"
 
 [preprocessor.svgbob]
 command = "mdbook-svgbob"
+optional = true
 code_block = "bob"
 background = "transparent"
 stroke_color = "var(--fg)"
