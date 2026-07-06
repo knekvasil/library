@@ -23,10 +23,13 @@ if ! command -v mdbook-mermaid &>/dev/null; then
   export PATH="/tmp:$PATH"
 fi
 
-# Install mdbook-svgbob if not already present
+# Install Rust + mdbook-svgbob if not already present
 if ! command -v mdbook-svgbob &>/dev/null; then
+  echo "Installing Rust toolchain..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  . "$HOME/.cargo/env"
   echo "Installing mdbook-svgbob (cargo)..."
-  cargo install mdbook-svgbob --version 0.3.0 2>&1 || echo "svgbob install failed, build will continue with optional=true"
+  cargo install mdbook-svgbob --version 0.3.0
 fi
 
 # Build each book
