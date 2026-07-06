@@ -2,9 +2,9 @@
 
 Notes, tutorials, and deep dives on machine learning concepts.
 
-## Topics
+## Articles
 
-- [General ML Review](general-ml-review.md)
+- [General ML Review](general-ml-review.md) — Curated questions and answers for Machine Learning Engineer interviews, covering ML theory, classic algorithms, deep learning, LLMs, system design, and MLOps
 
 ---
 
