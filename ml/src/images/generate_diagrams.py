@@ -7,12 +7,20 @@ import os
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 
-# Global: transparent background
+# Global: transparent background, use currentColor for theme-aware text
 plt.rcParams.update({
     'figure.facecolor': 'none',
     'axes.facecolor': 'none',
     'savefig.facecolor': 'none',
     'savefig.transparent': True,
+    'text.color': '#1a1a1a',
+    'axes.labelcolor': '#1a1a1a',
+    'axes.titlecolor': '#1a1a1a',
+    'xtick.color': '#1a1a1a',
+    'ytick.color': '#1a1a1a',
+    'legend.facecolor': 'white',
+    'legend.edgecolor': '#cccccc',
+    'legend.framealpha': 0.9,
 })
 
 def save(name):
@@ -22,7 +30,7 @@ def save(name):
     print(f'  Generated {name}')
 
 # === 1. Bias-Variance Tradeoff ===
-fig, ax = plt.subplots(figsize=(6, 4))
+fig, ax = plt.subplots(figsize=(8, 4))
 complexity = np.linspace(0, 1, 100)
 bias = (1 - complexity)**2
 variance = complexity**2
@@ -35,9 +43,10 @@ ax.text(0.45, 0.95, 'Sweet spot', ha='center', fontsize=9, color='gray', fontsty
 ax.set_xlabel('Model complexity', fontsize=11)
 ax.set_ylabel('Error', fontsize=11)
 ax.set_title('Bias-Variance Tradeoff', fontsize=13, fontweight='bold')
-ax.legend(fontsize=9)
+ax.legend(fontsize=9, loc='upper left', bbox_to_anchor=(1.02, 1))
 ax.set_ylim(0, 1.1)
 ax.set_xlim(-0.02, 1.02)
+plt.tight_layout()
 save('bias_variance_tradeoff.svg')
 
 # === 2. Overfitting / Underfitting Loss Curves ===
@@ -162,7 +171,7 @@ plt.tight_layout()
 save('gradient_descent.svg')
 
 # === 6. PCA 2D Projection ===
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4.5))
 
 np.random.seed(123)
 n = 100
@@ -173,6 +182,20 @@ eigvals, eigvecs = np.linalg.eigh(cov)
 idx = np.argsort(eigvals)[::-1]
 eigvecs = eigvecs[:, idx]
 
+# Compute common data bounds
+all_data = np.vstack([data, data @ eigvecs.T])
+x_min, x_max = all_data[:, 0].min() - 1, all_data[:, 0].max() + 1
+y_min, y_max = all_data[:, 1].min() - 1, all_data[:, 1].max() + 1
+x_range = max(x_max - x_min, y_max - y_min) / 2
+x_center = (x_max + x_min) / 2
+y_center = (y_max + y_min) / 2
+
+for ax in [ax1, ax2]:
+    ax.set_xlim(x_center - x_range, x_center + x_range)
+    ax.set_ylim(y_center - x_range, y_center + x_range)
+    ax.set_aspect('equal')
+    ax.set_box_aspect(1)
+
 ax1.scatter(data[:, 0], data[:, 1], alpha=0.6, s=20, color='#3498db')
 for i, (vec, val) in enumerate(zip(eigvecs.T, eigvals[idx])):
     vec_scaled = vec * np.sqrt(val) * 1.5
@@ -182,7 +205,6 @@ for i, (vec, val) in enumerate(zip(eigvecs.T, eigvals[idx])):
 ax1.set_title('Original Data with Principal Components', fontsize=10, fontweight='bold')
 ax1.set_xlabel('Feature 1')
 ax1.set_ylabel('Feature 2')
-ax1.set_aspect('equal')
 
 # Projected
 projected = data @ eigvecs.T
@@ -190,7 +212,6 @@ ax2.scatter(projected[:, 0], projected[:, 1], alpha=0.6, s=20, color='#2ecc71')
 ax2.set_xlabel('PC 1 (%.1f%% variance)' % (eigvals[idx][0] / eigvals[idx].sum() * 100))
 ax2.set_ylabel('PC 2 (%.1f%% variance)' % (eigvals[idx][1] / eigvals[idx].sum() * 100))
 ax2.set_title('Projected onto PC1-PC2', fontsize=10, fontweight='bold')
-ax2.set_aspect('equal')
 
 fig.suptitle('Principal Component Analysis (PCA)', fontsize=13, fontweight='bold')
 plt.tight_layout()
@@ -229,8 +250,7 @@ mean_t = 5 + 0.08 * t
 data_drift = mean_t + np.random.randn(50) * 1.5
 ax1.plot(t, data_drift, 'o-', color='#3498db', markersize=4, linewidth=1)
 ax1.axvline(25, color='red', alpha=0.3, linestyle=':')
-# Move label lower so it doesn't intersect title
-ax1.text(25, data_drift.min() - 1, "Shift →", ha='center', color='red', fontsize=9, va='top')
+ax1.text(25, 4.5, "Shift →", ha='center', color='red', fontsize=9)
 ax1.set_title('Data Drift (Covariate Shift)\n$P(x)$ changes', fontsize=10, fontweight='bold')
 ax1.set_xlabel('Time')
 ax1.set_ylabel('Feature Value')

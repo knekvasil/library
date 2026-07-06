@@ -1,0 +1,19 @@
+/* Dark mode adjustments for SVGs and diagrams */
+
+@media (prefers-color-scheme: dark) {
+    /* Invert content images (SVG plots) for dark theme visibility */
+    .content img[src*="images/"] {
+        filter: invert(0.88) hue-rotate(180deg);
+    }
+
+    /* Mermaid diagrams: use dark theme */
+    .mermaid {
+        filter: invert(0.88) hue-rotate(180deg);
+    }
+
+    /* Restore color fidelity for the confusion matrix heatmap (colormap-dependent) */
+    .content img[src*="confusion_matrix"],
+    .content img[src*="gradient_descent"] {
+        filter: invert(0.85) hue-rotate(180deg) saturate(1.2);
+    }
+}
